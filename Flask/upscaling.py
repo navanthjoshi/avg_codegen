@@ -1,15 +1,8 @@
-# upscaling.py
 import pandas as pd
 import re
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-
-
-global match_ratio 
-
 
 def extract_keywords(prompt):
-    print("Extracting kywords!!")
+
     stop_words = {'give', 'me', 'a', 'with', 'the', 'to', 'is', 'as', 'an', 'in'}
     prompt = re.sub(r'[^\w\s]', '', prompt)
     words = prompt.lower().split()
@@ -23,49 +16,52 @@ def jaccard_similarity(list1, list2):
 
 def find_best_match(keywords, descriptions):
     best_match = None
+    best_output = None
     highest_ratio = 0
-    for description in descriptions:
+    for description, output in descriptions:
         description_keywords = description.lower().split()
         match_ratio = jaccard_similarity(keywords, description_keywords)
         if match_ratio > highest_ratio:
             highest_ratio = match_ratio
             best_match = description
-    return best_match
+            best_output = output
+    return best_match, best_output, highest_ratio
 
-def create_system_prompt(best_match, description):
-    print("Creating system prompt")
+def create_system_prompt(best_match, match_ratio):
+
     if match_ratio < 0.2:
         system_prompt = (
-        "### System Prompt: I want you to act as an IC designer, and implement the following in Verilog.### "
-        f"Instruction: Generate a Verilog module with the following description: "
-        f"Matching Module: {best_match}"
+            "### System Prompt: I want you to act as an IC designer, and implement the following in Verilog.### "
+            "Instruction: Generate a Verilog module with the following description: "
+            f"Matching Module: {best_match}\n"
         )
-    system_prompt = (
-        "### System Prompt: I want you to act as an IC designer, and implement the following in Verilog.### "
-        f"Instruction: Generate a Verilog module with the following description: {description} "
-        f"Matching Module: {best_match}"
-    )
+    else:
+        system_prompt = (
+            "### System Prompt: I want you to act as an IC designer, and implement the following in Verilog.### "
+            f"Instruction: Generate a Verilog module with the following description: {best_match}\n"
+        )
     return system_prompt
 
 def load_modules_from_excel(file_path):
     df = pd.read_excel(file_path)
     module_names = df['module'].tolist()
-    # print(module_names)
-    descriptions = df['description'].tolist()
-    print("Loading modules")
+    descriptions = df[['description', 'output']].values.tolist()
+
     return df, module_names, descriptions
 
 def generate_system_prompt(user_prompt, file_path='temp_dataset.xlsx'):
-    print("recieved the user_prompt")
+
     df, module_names, descriptions = load_modules_from_excel(file_path)
-    print(descriptions)
+
     keywords = extract_keywords(user_prompt)
-    best_match = find_best_match(keywords, descriptions)
+    best_match, best_output, highest_ratio = find_best_match(keywords, descriptions)
 
     if best_match:
-        system_prompt = create_system_prompt(best_match, best_match)
-        return system_prompt
+        system_prompt = create_system_prompt(best_match, highest_ratio)
+        return system_prompt, best_output
     else:
-        system_prompt = "I want you to act as an IC designer, and implement the following in Verilog."
-        description = "Generate a Verilog module with the following description: FIFO module with simple read and write functionality"
-        return system_prompt + " " + description +" " + user_prompt
+        system_prompt = (
+            "### System Prompt: I want you to act as an IC designer, and implement the following in Verilog.### "
+            "Instruction: Generate a Verilog module with the following description: "
+        )
+        return system_prompt + " " + user_prompt
