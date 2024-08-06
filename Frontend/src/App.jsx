@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./App.css";  // Ensure you import the CSS file
 
 function App() {
   const [input, setInput] = useState("");
@@ -18,20 +19,20 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Text Prediction App</h1>
+        <h1>Automatic Verilog Code Generation</h1>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Enter your text"
+            placeholder="Enter the Prompt"
           />
           <button type="submit">Submit</button>
         </form>
-        {response && (
-          <div>
+        {response && response.generated_text && (
+          <div className="prediction-box">
             <h2>Prediction:</h2>
-            <p>{JSON.stringify(response)}</p>
+            <pre>{response.generated_text}</pre>
           </div>
         )}
       </header>

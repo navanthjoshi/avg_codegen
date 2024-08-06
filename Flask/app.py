@@ -15,9 +15,9 @@ def predict_route():
         system_prompt, best_output = generate_system_prompt(user_input)
         output = best_output
         prediction = predict(system_prompt)
-        score = calculate_scores(output, output)
+        score = calculate_scores(prediction, output)
         ### Send the inference code here!!!
-        return jsonify({"generated_text": score})
+        return jsonify({"generated_text": prediction})
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500

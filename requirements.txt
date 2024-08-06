@@ -1,0 +1,11 @@
+openpyxl
+pandas
+scikit-learn
+flask
+transformers
+peft
+torch 
+torchvision 
+bitsandbytes
+torchaudio 
+--index-url https://download.pytorch.org/whl/cu118
