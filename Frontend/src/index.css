@@ -65,10 +65,10 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-} */
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+} *
 
 /* General styles for the entire app */
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -104,8 +104,8 @@ html, body {
 
 .Prediction {
   width: 200%;
-  max-width: 1000px;
-  padding: 100px;
+  max-width: 10000px;
+  padding: 10px 50px;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;  
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
@@ -146,14 +146,32 @@ button:hover {
 .prediction-box {
   padding: 20px;
   background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 10px;
+  border-radius: 100px;
   color: white;
-  max-width: 800px;
+  max-width: 8000px;
   margin-top: 20px;
+  height: auto; /* Allow height to adjust based on content */
 }
 
 .prediction-box h2 {
-  color: white;
+  color: rgb(255, 255, 255);
+}
+.verilog-result-box h2 {
+  color: #ff9800; /* Change this color to your preference for the heading */
+}
+
+.error {
+  color: #ff0000; /* Change this color to your preference for the error message */
+}
+
+.verilog-result {
+  display: flex;
+  justify-content: space-between;
+  color: #ff0000; /* Change this color to your preference for the error message */
+  margin-top: 20px;
+  white-space: nowrap; /* Ensure the text stays in a single line */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .prediction-box pre {

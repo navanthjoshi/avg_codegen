@@ -29,10 +29,27 @@ function App() {
           />
           <button type="submit">Submit</button>
         </form>
-        {response && response.generated_text && (
-          <div className="prediction-box">
-            <h2>Prediction:</h2>
-            <pre>{response.generated_text}</pre>
+        {response && (
+          <div className="response-box">
+            {response.generated_text && (
+              <div className="prediction-box">
+                <h2>Prediction:</h2>
+                <pre>{response.generated_text}</pre>
+              </div>
+            )}
+            {response.verilog_result && (
+              <div className="verilog-result-box">
+                <h2>Verilog Compilation Result:</h2>
+                {response.verilog_result.error ? (
+                  <pre className="error">Error: {response.verilog_result.error}</pre>
+                ) : (
+                  <>
+                    <pre className="stdout">Output: {response.verilog_result.stdout}</pre>
+                    <pre className="stderr">Messages: {response.verilog_result.stderr}</pre>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
       </header>
